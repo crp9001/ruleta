@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ruleta del Premio Mayor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+:root{
+  color-scheme: dark;
+  --stage:#180a12;
+  --stage2:#2a0f1e;
+  --gold:#f5c542;
+  --gold-deep:#b8860b;
+  --red:#d7263d;
+  --cream:#fff4dc;
+  --teal:#138a7e;
+  --plum:#6b2d5c;
+  --muted:#c9a9b8;
+  --display:"Bungee","Impact","Arial Black",sans-serif;
+  --body:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
+}
+html,body{min-height:100%}
+body{
+  margin:0;
+  background:radial-gradient(ellipse at 50% 0%, var(--stage2) 0%, var(--stage) 60%) var(--stage);
+  color:var(--cream);
+  font-family:var(--body);
+  font-size:18px;
+  padding-inline:16px;
+  padding-block:20px 40px;
+}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:22px}
+
+/* Marquee */
+.marquee{
+  position:relative;width:100%;box-sizing:border-box;
+  background:linear-gradient(180deg,#3a1226,#220a17);
+  border:4px solid var(--gold);
+  border-radius:18px;
+  padding:26px 22px 22px;
+  text-align:center;
+  box-shadow:0 0 0 4px #220a17, 0 0 40px rgba(245,197,66,.25);
+}
+.bulbs{position:absolute;inset:6px;pointer-events:none}
+.bulbs i{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:blink 1.2s infinite}
+.bulbs i:nth-child(even){animation-delay:.6s}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.eyebrow{font-family:var(--body);font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-size:15px;margin:0 0 6px}
+h1{
+  font-family:var(--display);font-weight:400;margin:0;
+  font-size:clamp(28px,7vw,52px);line-height:1.02;text-wrap:balance;
+  color:var(--cream);
+  text-shadow:0 3px 0 var(--red),0 6px 0 #5a0f1e,0 0 30px rgba(245,197,66,.4);
+}
+.sub{margin:10px 0 0;color:var(--muted);font-size:17px;letter-spacing:.04em}
+
+/* Wheel */
+.stagewheel{position:relative;width:min(92vw,560px);aspect-ratio:1;max-width:100%}
+#wheel{width:100%;height:100%;display:block;border-radius:50%;box-shadow:0 0 0 10px var(--gold-deep),0 0 0 16px #220a17,0 20px 60px rgba(0,0,0,.6)}
+.pointer{
+  position:absolute;left:50%;top:-18px;transform:translateX(-50%);
+  width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;
+  border-top:46px solid var(--gold);filter:drop-shadow(0 4px 4px rgba(0,0,0,.6));z-index:2
+}
+.hub{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:20%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff3b0,var(--gold) 45%,var(--gold-deep));
+  box-shadow:0 0 0 5px #220a17,0 6px 16px rgba(0,0,0,.5);
+  display:grid;place-items:center;font-family:var(--display);color:#3a1226;font-size:clamp(12px,3vw,18px)
+}
+
+.controls{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center}
+button{font-family:var(--display);cursor:pointer;border:none;border-radius:999px}
+#spin{
+  font-size:clamp(26px,6vw,36px);padding:14px 56px;
+  background:linear-gradient(180deg,#ff4d5e,var(--red));color:var(--cream);
+  box-shadow:0 6px 0 #7d1020,0 10px 24px rgba(215,38,61,.45);
+  letter-spacing:.06em;transition:transform .08s
+}
+#spin:active{transform:translateY(4px);box-shadow:0 2px 0 #7d1020}
+#spin:disabled{opacity:.55;cursor:not-allowed}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.opt{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:17px;cursor:pointer}
+.opt input{width:20px;height:20px;accent-color:var(--gold)}
+
+/* Result */
+.result{
+  width:100%;box-sizing:border-box;text-align:center;
+  border:2px dashed var(--gold);border-radius:16px;padding:18px;
+  background:rgba(245,197,66,.06)
+}
+.result .lbl{font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);font-size:14px}
+.result .name{font-family:var(--display);font-size:clamp(24px,6vw,40px);margin:6px 0 4px;line-height:1.1;text-wrap:balance}
+.result .msg{color:var(--muted);font-size:18px}
+.result.win{animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+#download{
+  margin-top:14px;font-size:18px;padding:12px 28px;
+  background:var(--gold);color:#2a0f1e;box-shadow:0 4px 0 var(--gold-deep)
+}
+#download:disabled{opacity:.4;cursor:not-allowed}
+.note{font-size:15px;color:var(--muted);margin-top:8px;min-height:1em}
+#preview{display:block;margin:12px auto 0;max-width:100%;border-radius:10px}
+
+.list{width:100%}
+.list summary{cursor:pointer;color:var(--gold);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:15px}
+.list ol{columns:2;column-gap:24px;margin:10px 0 0;padding-left:28px;color:var(--muted);font-size:16px}
+.list li.out{text-decoration:line-through;opacity:.5}
+@media (max-width:480px){.list ol{columns:1}}
+
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:10}
+@media (prefers-reduced-motion:reduce){.bulbs i{animation:none}.result.win{animation:none}}
+</style>
+</head>
+<body>
+
+
+<canvas id="confetti"></canvas>
+<div class="wrap">
+  <header class="marquee" aria-label="Rótulo">
+    <div class="bulbs" id="bulbs"></div>
+    <p class="eyebrow">★ Gran sorteo · Premio mayor ★</p>
+    <h1>¡Muchas gracias por sus servicios!</h1>
+    <p class="sub">Horario setiembre 2026 · 24 participantes</p>
+  </header>
+
+  <div class="stagewheel">
+    <div class="pointer" aria-hidden="true"></div>
+    <canvas id="wheel" width="1100" height="1100" aria-label="Ruleta con los nombres del personal"></canvas>
+    <div class="hub">GIRE</div>
+  </div>
+
+  <div class="controls">
+    <button id="spin" type="button">GIRE</button>
+    <label class="opt"><input type="checkbox" id="remove"> Sacar al seleccionado de la ruleta</label>
+  </div>
+
+  <section class="result" id="result" aria-live="polite">
+    <div class="lbl" id="resLbl">Esperando el giro…</div>
+    <div class="name" id="resName">¿Quién será?</div>
+    <div class="msg" id="resMsg">Presione GIRE para conocer al ganador del premio mayor.</div>
+    <button id="download" type="button" disabled>Descargue la foto</button>
+    <div class="note" id="note"></div>
+    <img id="preview" alt="Foto del seleccionado" hidden>
+  </section>
+
+  <details class="list">
+    <summary>Participantes</summary>
+    <ol id="plist"></ol>
+  </details>
+</div>
+
+<script>
+const ALL = [
+"ACEVEDO ARIAS LUIS FERNANDO","ALVARADO CHAVEZ TULIO","ARAUJO ROJAS CARLOS W.","BUSTAMANTE MANRIQUE JOSE",
+"CASANI ALBERTO JHOM","COLLAZOS PAJUELO RICARDO J.","CCOYO DAVILA JOSE LUIS","CRUZ HUAMAN LUIS",
+"GUERRA GIRALDO RICARDO","HUAMAN RAMIREZ FIDEL","HUAMAN RAMIREZ SEGUNDO","KOC MENA ROBERTO CARLOS",
+"LA TORRE FERNANDEZ EDWIN","MACEDO FASABI YEISSO FRAY","MORENO SOLANO JUAN","OLANO TARRILLO MIGUEL",
+"ORMEÑO VALERA PABLO","OSPINA MARTNI JOEL","QUISPE TORREJON CARLOS E.","RAMIREZ PEÑA CRISTHIAN",
+"RODRIGUEZ RAMOS RAUL R.","ROSALES CASALLO ERICSON","SOYER ALFARO NAIM","VILCHEZ RAFAEL JESUS"];
+let names = ALL.slice();
+const out = new Set();
+const COLORS = ["#d7263d","#f5c542","#138a7e","#6b2d5c"];
+const TEXT = {"#d7263d":"#fff4dc","#f5c542":"#2a0f1e","#138a7e":"#fff4dc","#6b2d5c":"#fff4dc"};
+
+const cv = document.getElementById('wheel'), ctx = cv.getContext('2d');
+const R = cv.width/2;
+let angle = 0, spinning = false, winner = null, photoBlob = null;
+
+// bulbs
+(function(){const b=document.getElementById('bulbs');const n=14;
+ for(let i=0;i<n;i++){for(const pos of ['top','bottom']){const e=document.createElement('i');e.style.left=(i/(n-1)*100)+'%';e.style[pos]='-4px';e.style.transform='translateX(-50%)';b.appendChild(e);}}
+ for(let i=1;i<4;i++){for(const pos of ['left','right']){const e=document.createElement('i');e.style.top=(i/4*100)+'%';e.style[pos]='-4px';b.appendChild(e);}}
+})();
+
+function renderList(){const ol=document.getElementById('plist');ol.innerHTML='';
+  ALL.forEach(n=>{const li=document.createElement('li');li.textContent=n;if(out.has(n))li.className='out';ol.appendChild(li);});}
+
+function colorFor(i,n){ let c = COLORS[i%4]; if(n%4===1 && i===n-1) c = COLORS[2]; return c; }
+
+function draw(){
+  const n = names.length, seg = Math.PI*2/n;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.save(); ctx.translate(R,R); ctx.rotate(angle);
+  for(let i=0;i<n;i++){
+    const a0 = -Math.PI/2 + i*seg - seg/2; // segment i centered at top when angle=0
+    const c = colorFor(i,n);
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,R-4,a0,a0+seg); ctx.closePath();
+    ctx.fillStyle=c; ctx.fill();
+    ctx.strokeStyle='rgba(24,10,18,.55)'; ctx.lineWidth=3; ctx.stroke();
+    ctx.save(); ctx.rotate(a0+seg/2);
+    ctx.fillStyle=TEXT[c]; ctx.textAlign='right'; ctx.textBaseline='middle';
+    let fs = n>16?26:n>8?32:40;
+    ctx.font = `700 ${fs}px "Barlow Condensed","Arial Narrow",sans-serif`;
+    const maxW = R*0.68; let t = names[i];
+    while(ctx.measureText(t).width>maxW && fs>14){fs--;ctx.font=`700 ${fs}px "Barlow Condensed","Arial Narrow",sans-serif`;}
+    ctx.fillText(t, R-30, 0);
+    ctx.restore();
+  }
+  // rim dots
+  for(let i=0;i<n;i++){const a=-Math.PI/2+i*seg-seg/2;ctx.beginPath();ctx.arc(Math.cos(a)*(R-14),Math.sin(a)*(R-14),6,0,Math.PI*2);ctx.fillStyle='#fff4dc';ctx.fill();}
+  ctx.restore();
+}
+
+// Audio tick
+let ac=null;
+function tick(){ try{ if(!ac) ac=new (window.AudioContext||window.webkitAudioContext)();
+  const o=ac.createOscillator(),g=ac.createGain();o.type='square';o.frequency.value=900;
+  g.gain.setValueAtTime(.05,ac.currentTime);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+.05);
+  o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.06);}catch(e){} }
+function fanfare(){ try{ if(!ac) return; [523,659,784,1047].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;
+  const t=ac.currentTime+i*.14;g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.0001,t+.5);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.5);}); }catch(e){} }
+
+function rand(){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]/4294967296;}
+
+function spin(){
+  if(spinning||names.length<1) return;
+  if(document.getElementById('remove').checked && winner && names.includes(winner) && names.length>1){
+    out.add(winner); names=names.filter(n=>n!==winner); renderList(); draw();
+  }
+  spinning=true; document.getElementById('spin').disabled=true;
+  document.getElementById('download').disabled=true; document.getElementById('preview').hidden=true;
+  document.getElementById('note').textContent='';
+  const res=document.getElementById('result'); res.classList.remove('win');
+  document.getElementById('resLbl').textContent='Girando…';
+  document.getElementById('resName').textContent='🥁';
+  document.getElementById('resMsg').textContent='Redoble de tambores';
+
+  const n=names.length, seg=Math.PI*2/n;
+  const pick=Math.floor(rand()*n);
+  const jitter=(rand()-.5)*seg*0.7;
+  // want final angle so that segment pick is at top: angle ≡ -pick*seg (mod 2π)
+  const base = angle - (angle % (Math.PI*2));
+  let target = base + 6*Math.PI*2 + (-(pick*seg) - jitter);
+  while(target < angle + 5*Math.PI*2) target += Math.PI*2;
+  const start=angle, dur=5200+rand()*1200, t0=performance.now();
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let lastSeg = Math.floor((start+seg/2)/seg);
+  function frame(now){
+    let p=Math.min(1,(now-t0)/(reduce?600:dur));
+    const e=1-Math.pow(1-p,4);
+    angle = start + (target-start)*e;
+    const s=Math.floor((angle+seg/2)/seg); if(s!==lastSeg){lastSeg=s;tick();}
+    draw();
+    if(p<1) requestAnimationFrame(frame); else finish(pick);
+  }
+  requestAnimationFrame(frame);
+}
+
+function finish(i){
+  spinning=false; winner=names[i];
+  document.getElementById('spin').disabled=false;
+  const res=document.getElementById('result'); void res.offsetWidth; res.classList.add('win');
+  document.getElementById('resLbl').textContent='★ Seleccionado del premio mayor ★';
+  document.getElementById('resName').textContent=winner;
+  document.getElementById('resMsg').textContent='¡Muchas gracias por sus servicios!';
+  fanfare(); confetti();
+  makePhoto(winner).then(b=>{photoBlob=b;
+    const img=document.getElementById('preview'); img.src=URL.createObjectURL(b); img.hidden=false;
+    document.getElementById('download').disabled=false;});
+}
+
+function wrapText(c,text,maxW){const words=text.split(' ');const lines=[];let line='';
+  for(const w of words){const t=line?line+' '+w:w;if(c.measureText(t).width>maxW&&line){lines.push(line);line=w;}else line=t;}
+  if(line)lines.push(line);return lines;}
+
+function makePhoto(name){
+  const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  const bg=g.createRadialGradient(W/2,0,50,W/2,H*0.4,H);bg.addColorStop(0,'#3a1226');bg.addColorStop(1,'#180a12');
+  g.fillStyle=bg;g.fillRect(0,0,W,H);
+  // rays
+  g.save();g.translate(W/2,H*0.55);for(let i=0;i<24;i++){g.rotate(Math.PI/12);g.beginPath();g.moveTo(0,0);g.lineTo(-60,-1100);g.lineTo(60,-1100);g.closePath();g.fillStyle=i%2?'rgba(245,197,66,.05)':'rgba(215,38,61,.05)';g.fill();}g.restore();
+  // frame + bulbs
+  g.strokeStyle='#f5c542';g.lineWidth=14;g.strokeRect(40,40,W-80,H-80);
+  g.fillStyle='#f5c542';for(let x=70;x<W-40;x+=56){for(const y of [40,H-40]){g.beginPath();g.arc(x,y,8,0,7);g.fill();}}
+  for(let y=96;y<H-40;y+=56){for(const x of [40,W-40]){g.beginPath();g.arc(x,y,8,0,7);g.fill();}}
+  g.textAlign='center';g.textBaseline='middle';
+  g.fillStyle='#f5c542';g.font='700 40px "Barlow Condensed","Arial Narrow",sans-serif';
+  g.fillText('★  GRAN SORTEO · PREMIO MAYOR  ★',W/2,150);
+  g.font='88px Bungee, Impact, sans-serif';
+  const hl=['¡MUCHAS GRACIAS','POR SUS','SERVICIOS!'];
+  hl.forEach((l,i)=>{const y=270+i*105;g.fillStyle='#5a0f1e';g.fillText(l,W/2,y+10);g.fillStyle='#d7263d';g.fillText(l,W/2,y+5);g.fillStyle='#fff4dc';g.fillText(l,W/2,y);});
+  // ribbon
+  g.fillStyle='#d7263d';g.fillRect(90,630,W-180,70);g.fillStyle='#fff4dc';g.font='700 42px "Barlow Condensed","Arial Narrow",sans-serif';
+  g.fillText('EL SELECCIONADO ES',W/2,666);
+  // name
+  let fs=110;g.font=`${fs}px Bungee, Impact, sans-serif`;let lines=wrapText(g,name,W-200);
+  while((lines.length>3||lines.some(l=>g.measureText(l).width>W-200))&&fs>50){fs-=6;g.font=`${fs}px Bungee, Impact, sans-serif`;lines=wrapText(g,name,W-200);}
+  const lh=fs*1.12, y0=900-(lines.length-1)*lh/2;
+  lines.forEach((l,i)=>{g.fillStyle='#b8860b';g.fillText(l,W/2,y0+i*lh+6);g.fillStyle='#f5c542';g.fillText(l,W/2,y0+i*lh);});
+  // trophy stars
+  g.fillStyle='#f5c542';g.font='60px sans-serif';g.fillText('★ ★ ★',W/2,1110);
+  const d=new Date().toLocaleDateString('es-PE',{day:'2-digit',month:'long',year:'numeric'});
+  g.fillStyle='#c9a9b8';g.font='600 36px "Barlow Condensed","Arial Narrow",sans-serif';
+  g.fillText('Horario setiembre 2026 · '+d,W/2,1200);
+  return new Promise(r=>c.toBlob(r,'image/png'));
+}
+
+function download(){
+  if(!photoBlob) return;
+  const fname='premio-mayor-'+winner.toLowerCase().replace(/[^a-z0-9ñ]+/gi,'-').replace(/^-|-$/g,'')+'.png';
+  const note=document.getElementById('note');
+  try{
+    const a=document.createElement('a');a.href=URL.createObjectURL(photoBlob);a.download=fname;
+    document.body.appendChild(a);a.click();a.remove();
+    note.textContent='Foto descargada. Si no aparece, mantenga presionada la imagen de abajo y elija "Guardar imagen".';
+  }catch(e){note.textContent='Mantenga presionada la imagen de abajo y elija "Guardar imagen".';}
+}
+
+// Confetti
+const cf=document.getElementById('confetti'),cc=cf.getContext('2d');let parts=[];
+function confetti(){ if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  cf.width=innerWidth;cf.height=innerHeight;const cols=['#f5c542','#d7263d','#138a7e','#fff4dc','#6b2d5c'];
+  for(let i=0;i<180;i++)parts.push({x:innerWidth/2,y:innerHeight*0.35,vx:(Math.random()-.5)*16,vy:-Math.random()*16-4,s:6+Math.random()*6,r:Math.random()*6,c:cols[i%5],life:0});
+  requestAnimationFrame(stepC);}
+function stepC(){cc.clearRect(0,0,cf.width,cf.height);parts.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.r+=.2;p.life++;
+  cc.save();cc.translate(p.x,p.y);cc.rotate(p.r);cc.fillStyle=p.c;cc.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cc.restore();});
+  parts=parts.filter(p=>p.y<cf.height+40&&p.life<260);if(parts.length)requestAnimationFrame(stepC);else cc.clearRect(0,0,cf.width,cf.height);}
+
+document.getElementById('spin').addEventListener('click',spin);
+document.getElementById('download').addEventListener('click',download);
+renderList(); draw();
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(draw);
+</script>
+
+</body>
+</html>
